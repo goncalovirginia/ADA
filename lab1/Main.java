@@ -1,18 +1,20 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 	
-	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		
-		int numChildren = in.nextInt();
-		int max = 0;
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		int numChildren = Integer.parseInt(in.readLine());
+		int max = Integer.MIN_VALUE;
 		
 		for (int i = 0; i < numChildren; i++) {
-			int numSticks = in.nextInt();
+			String[] line = in.readLine().split(" ");
+			int numSticks = Integer.parseInt(line[0]);
 			
-			for (int j = 0; j < numSticks; j++) {
-				int stickNumber = in.nextInt();
+			for (int j = 1; j <= numSticks; j++) {
+				int stickNumber = Integer.parseInt(line[j]);
 				
 				if (stickNumber > max) {
 					max = stickNumber;
