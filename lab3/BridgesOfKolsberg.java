@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class BridgesOfKolsberg {
 	
@@ -11,7 +10,7 @@ public class BridgesOfKolsberg {
 		
 		for (int i = 0; i < numSamples; i++) {
 			City[] citiesNorth = readCitySequence(in), citiesSouth = readCitySequence(in);
-			int[] solution = solve(citiesNorth, citiesSouth);
+			long[] solution = solve(citiesNorth, citiesSouth);
 			System.out.println(solution[0] + " " + solution[1]);
 		}
 		
@@ -24,15 +23,15 @@ public class BridgesOfKolsberg {
 		
 		for (int i = 1; i <= numCities; i++) {
 			String[] cityInfo = in.readLine().split(" ");
-			cities[i] = new City(cityInfo[1], Integer.parseInt(cityInfo[2]));
+			cities[i] = new City(cityInfo[1], Long.parseLong(cityInfo[2]));
 		}
 		
 		return cities;
 	}
 	
-	private static int[] solve(City[] citiesNorth, City[] citiesSouth) {
-		int[][] maxTradeValue = new int[citiesNorth.length][citiesSouth.length],
-			minBridges = new int[citiesNorth.length][citiesSouth.length];
+	private static long[] solve(City[] citiesNorth, City[] citiesSouth) {
+		long[][] maxTradeValue = new long[citiesNorth.length][citiesSouth.length];
+		int[][] minBridges = new int[citiesNorth.length][citiesSouth.length];
 		
 		for (int n = 1; n < citiesNorth.length; n++) {
 			for (int s = 1; s < citiesSouth.length; s++) {
@@ -40,18 +39,26 @@ public class BridgesOfKolsberg {
 					maxTradeValue[n][s] = maxTradeValue[n - 1][s - 1] + citiesNorth[n].tradeValue + citiesSouth[s].tradeValue;
 					minBridges[n][s] = minBridges[n - 1][s - 1] + 1;
 				}
-				else {
-					maxTradeValue[n][s] = Math.max(maxTradeValue[n - 1][s], maxTradeValue[n][s - 1]);
-					minBridges[n][s] = maxTradeValue[n][s] == maxTradeValue[n - 1][s] ? minBridges[n - 1][s] : minBridges[n][s - 1];
-				}
+				updateBest(n, s, n - 1, s, maxTradeValue, minBridges);
+				updateBest(n, s, n, s - 1, maxTradeValue, minBridges);
 			}
 		}
 		
-		return new int[] {maxTradeValue[citiesNorth.length - 1][citiesSouth.length - 1],
-			minBridges[citiesNorth.length - 1][citiesSouth.length - 1]};
+		return new long[] {maxTradeValue[citiesNorth.length - 1][citiesSouth.length - 1],
+				minBridges[citiesNorth.length - 1][citiesSouth.length - 1]};
 	}
 	
-	private record City(String os, int tradeValue) {
+	private static void updateBest(int n, int s, int nPrev, int sPrev, long[][] maxTradeValue, int[][] minBridges) {
+		if (maxTradeValue[nPrev][sPrev] > maxTradeValue[n][s]) {
+			maxTradeValue[n][s] = maxTradeValue[nPrev][sPrev];
+			minBridges[n][s] = minBridges[nPrev][sPrev];
+		}
+		else if (maxTradeValue[nPrev][sPrev] == maxTradeValue[n][s]) {
+			minBridges[n][s] = Math.min(minBridges[nPrev][sPrev], minBridges[n][s]);
+		}
+	}
+	
+	private record City(String os, long tradeValue) {
 	
 	}
 	
