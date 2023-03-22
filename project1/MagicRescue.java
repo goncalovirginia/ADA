@@ -28,40 +28,6 @@ public class MagicRescue {
 		in.close();
 	}
 	
-	private static int index(char c) {
-		return switch (c) {
-			case '3', 'h' -> 0;
-			case 't', 'p' -> 1;
-			case 'd', 'c' -> 2;
-			default -> 3;
-		};
-	}
-	
-	private static int cost(char plot, char item) {
-		return PLOT_ITEM_COST[index(plot)][index(item)];
-	}
-	
-	private static int minCost(int plotIndex, char item) {
-		char plot = route.charAt(plotIndex);
-		int traversalCost = item == 'n' ? 1 : 2;
-		
-		if (plotIndex == route.length() - 1) {
-			return traversalCost;
-		}
-		
-		if (plot == '3' || plot== 't' || plot == 'd') {
-			if (item == 'n') return BIG_VALUE;
-			traversalCost = cost(plot, item);
-			if (traversalCost == 0) return BIG_VALUE;
-			return traversalCost + minCost(plotIndex + 1, item);
-		}
-		
-		int min = minCost(plotIndex + 1, 'n');
-		if (item != 'n') min = Math.min(min, 1 + minCost(plotIndex + 1, item));
-		if (plot != 'e') min = Math.min(min, 1 + minCost(plotIndex + 1, plot));
-		return traversalCost + min;
-	}
-	
 	private static int minCostMemo(int plotIndex, char item) {
 		int itemIndex = index(item);
 		int calculatedCost = minCost[plotIndex][itemIndex];
@@ -74,22 +40,31 @@ public class MagicRescue {
 		int traversalCost = item == 'n' ? 1 : 2;
 		
 		if (plotIndex == route.length() - 1) {
-			minCost[plotIndex][itemIndex] = traversalCost;
-		}
-		else if (plot == '3' || plot== 't' || plot == 'd') {
-			if (item == 'n') return minCost[plotIndex][itemIndex] = BIG_VALUE;
-			traversalCost = cost(plot, item);
-			if (traversalCost == 0) minCost[plotIndex][itemIndex] = BIG_VALUE;
-			minCost[plotIndex][itemIndex] = traversalCost + minCostMemo(plotIndex + 1, item);
-		}
-		else {
-			int min = minCostMemo(plotIndex + 1, 'n');
-			if (item != 'n') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, item));
-			if (plot != 'e') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, plot));
-			minCost[plotIndex][itemIndex] = traversalCost + min;
+			return minCost[plotIndex][itemIndex] = traversalCost;
 		}
 		
-		return minCost[plotIndex][itemIndex];
+		if (plot == '3' || plot== 't' || plot == 'd') {
+			if (item == 'n' || (traversalCost = cost(plot, item)) == 0) return minCost[plotIndex][itemIndex] = BIG_VALUE;
+			return minCost[plotIndex][itemIndex] = traversalCost + minCostMemo(plotIndex + 1, item);
+		}
+		
+		int min = minCostMemo(plotIndex + 1, 'n');
+		if (item != 'n') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, item));
+		if (plot != 'e') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, plot));
+		return minCost[plotIndex][itemIndex] = traversalCost + min;
+	}
+	
+	private static int index(char c) {
+		return switch (c) {
+			case '3', 'h' -> 0;
+			case 't', 'p' -> 1;
+			case 'd', 'c' -> 2;
+			default -> 3;
+		};
+	}
+	
+	private static int cost(char plot, char item) {
+		return PLOT_ITEM_COST[index(plot)][index(item)];
 	}
 	
 }
