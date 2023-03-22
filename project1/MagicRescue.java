@@ -6,56 +6,57 @@ public class MagicRescue {
 	
 	private static final int BIG_VALUE = 1000000;
 	
-	private static final int[][] PLOT_ITEM_COST = {
-			{4, 5, 6},
-			{0, 5, 6},
-			{0, 0, 6}
+	private static final int[][] MONSTER_ITEM_COST = {
+			{4, 5, 6, BIG_VALUE},
+			{0, 5, 6, BIG_VALUE},
+			{0, 0, 6, BIG_VALUE}
 	};
-	
-	private static String route;
-	private static int[][] minCost;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		int numTests = Integer.parseInt(in.readLine());
 		
 		for (int i = 0; i < numTests; i++) {
-			route = in.readLine();
-			minCost = new int[route.length()][4];
-			System.out.println(minCostMemo(0, 'n'));
+			System.out.println(solve(in.readLine()));
 		}
 		
 		in.close();
 	}
 	
-	private static int minCostMemo(int plotIndex, char item) {
-		int itemIndex = index(item);
-		int calculatedCost = minCost[plotIndex][itemIndex];
+	private static int solve(String route) {
+		int[] prev = {2, 2, 2, 1}, curr = prev;
+		char lastPlot = route.charAt(route.length() - 1);
 		
-		if (calculatedCost > 0) {
-			minCost[plotIndex][itemIndex] = calculatedCost;
+		if (isMonster(lastPlot)) {
+			prev = MONSTER_ITEM_COST[index(lastPlot)];
 		}
 		
-		char plot = route.charAt(plotIndex);
-		int traversalCost = item == 'n' ? 1 : 2;
-		
-		if (plotIndex == route.length() - 1) {
-			return minCost[plotIndex][itemIndex] = traversalCost;
+		for (int plotIndex = route.length() - 2; plotIndex >= 0; plotIndex--) {
+			curr = new int[4];
+			char plot = route.charAt(plotIndex);
+			
+			for (int itemIndex = 0; itemIndex < 4; itemIndex++) {
+				if (isMonster(plot)) {
+					int monsterCost;
+					curr[itemIndex] = itemIndex == 3 || (monsterCost = MONSTER_ITEM_COST[index(plot)][itemIndex]) == 0 ?
+							BIG_VALUE : monsterCost + prev[itemIndex];
+					continue;
+				}
+				
+				int min = prev[3];
+				if (itemIndex != 3) min = Math.min(min, 1 + prev[itemIndex]);
+				if (plot != 'e') min = Math.min(min, 1 + prev[index(plot)]);
+				curr[itemIndex] = (itemIndex == 3 ? 1 : 2) + min;
+			}
+			
+			prev = curr;
 		}
 		
-		if (plot == '3' || plot== 't' || plot == 'd') {
-			if (item == 'n' || (traversalCost = cost(plot, item)) == 0) return minCost[plotIndex][itemIndex] = BIG_VALUE;
-			return minCost[plotIndex][itemIndex] = traversalCost + minCostMemo(plotIndex + 1, item);
-		}
-		
-		int min = minCostMemo(plotIndex + 1, 'n');
-		if (item != 'n') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, item));
-		if (plot != 'e') min = Math.min(min, 1 + minCostMemo(plotIndex + 1, plot));
-		return minCost[plotIndex][itemIndex] = traversalCost + min;
+		return curr[3];
 	}
 	
-	private static int index(char c) {
-		return switch (c) {
+	private static int index(char plot) {
+		return switch (plot) {
 			case '3', 'h' -> 0;
 			case 't', 'p' -> 1;
 			case 'd', 'c' -> 2;
@@ -63,8 +64,8 @@ public class MagicRescue {
 		};
 	}
 	
-	private static int cost(char plot, char item) {
-		return PLOT_ITEM_COST[index(plot)][index(item)];
+	private static boolean isMonster(char plot) {
+		return plot == '3' || plot== 't' || plot == 'd';
 	}
 	
 }
