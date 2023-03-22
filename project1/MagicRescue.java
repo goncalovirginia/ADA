@@ -24,12 +24,8 @@ public class MagicRescue {
 	}
 	
 	private static int solve(String route) {
-		int[] prev = {2, 2, 2, 1}, curr = prev;
 		char lastPlot = route.charAt(route.length() - 1);
-		
-		if (isMonster(lastPlot)) {
-			prev = MONSTER_ITEM_COST[index(lastPlot)];
-		}
+		int[] prev = isMonster(lastPlot) ? MONSTER_ITEM_COST[index(lastPlot)] : new int[]{2, 2, 2, 1}, curr = prev;
 		
 		for (int plotIndex = route.length() - 2; plotIndex >= 0; plotIndex--) {
 			curr = new int[4];
