@@ -2,14 +2,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MagicRescue {
+public class Main {
 	
-	private static final int BIG_VALUE = 1000000, NUM_ITEMS = 4, NO_ITEM = 3;
+	private static final int BIG_VALUE = 1000000, NUM_ITEMS = 4, NO_ITEM = 3, NO_MONSTER = 3;
 	
-	private static final int[][] MONSTER_ITEM_COST = {
+	private static final int[][] COST = {
 			{4, 5, 6, BIG_VALUE},
 			{BIG_VALUE, 5, 6, BIG_VALUE},
-			{BIG_VALUE, BIG_VALUE, 6, BIG_VALUE}
+			{BIG_VALUE, BIG_VALUE, 6, BIG_VALUE},
+			{2, 2, 2, 1}
 	};
 	
 	public static void main(String[] args) throws IOException {
@@ -24,28 +25,20 @@ public class MagicRescue {
 	}
 	
 	private static int solve(String route) {
-		int[] temp = new int[NUM_ITEMS], curr = temp, prev = new int[NUM_ITEMS];
+		int[] temp = new int[NUM_ITEMS], prev = new int[NUM_ITEMS], curr = temp;
 		
 		for (int plotIndex = route.length() - 1; plotIndex >= 0; plotIndex--) {
+			temp = prev;
+			prev = curr;
 			curr = temp;
 			char plot = route.charAt(plotIndex);
 			int plotInt = plotToInt(plot);
 			boolean plotHasMonster = plot == '3' || plot == 't' || plot == 'd';
 			
-			for (int itemIndex = 0; itemIndex < NUM_ITEMS; itemIndex++) {
-				if (plotHasMonster) {
-					curr[itemIndex] = Math.min(MONSTER_ITEM_COST[plotInt][itemIndex] + prev[itemIndex], BIG_VALUE);
-					continue;
-				}
-				
-				int min = prev[NO_ITEM];
-				if (itemIndex != NO_ITEM) min = Math.min(min, 1 + prev[itemIndex]);
-				if (plotInt != NO_ITEM) min = Math.min(min, 1 + prev[plotInt]);
-				curr[itemIndex] = (itemIndex == NO_ITEM ? 1 : 2) + min;
+			for (int itemInt = 0; itemInt < NUM_ITEMS; itemInt++) {
+				curr[itemInt] = plotHasMonster ? Math.min(COST[plotInt][itemInt] + prev[itemInt], BIG_VALUE) :
+						COST[NO_MONSTER][itemInt] + Math.min(prev[NO_ITEM], 1 + Math.min(prev[itemInt], prev[plotInt]));
 			}
-			
-			temp = prev;
-			prev = curr;
 		}
 		
 		return curr[NO_ITEM];
