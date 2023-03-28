@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Main {
+public class MagicRescue {
 	
 	private static final int BIG_VALUE = 1000000, NUM_ITEMS = 4, NO_ITEM = 3;
 	
