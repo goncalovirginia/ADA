@@ -1,8 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-public class MagicRescue {
+public class Route {
 	
 	private static final int BIG_VALUE = 1000000, NUM_ITEMS = 4, NO_ITEM = 3, NO_MONSTER = 3;
 	
@@ -13,18 +9,13 @@ public class MagicRescue {
 			{2, 2, 2, 1}
 	};
 	
-	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		int numTests = Integer.parseInt(in.readLine());
-		
-		for (int i = 0; i < numTests; i++) {
-			System.out.println(solve(in.readLine()));
-		}
-		
-		in.close();
+	private final String route;
+	
+	public Route(String route) {
+		this.route = route;
 	}
 	
-	private static int solve(String route) {
+	public int solve() {
 		int[] temp = new int[NUM_ITEMS], prev = new int[NUM_ITEMS], curr = temp;
 		
 		for (int plotIndex = route.length() - 1; plotIndex >= 0; plotIndex--) {
