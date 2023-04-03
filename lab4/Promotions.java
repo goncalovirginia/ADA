@@ -20,8 +20,6 @@ public class Promotions {
 			diGraph.addEdge(precedenceRule[0], precedenceRule[1]);
 		}
 		
-		System.out.println(Arrays.toString(numNodesPerDepth(diGraph)));
-		
 		int[] solution = solve(abep[0], abep[1], diGraph);
 		System.out.println(solution[0]);
 		System.out.println(solution[1]);
@@ -30,21 +28,17 @@ public class Promotions {
 	
 	private static int[] solve(int a, int b, DiGraph diGraph) {
 		int[] numNodesPerDepth = numNodesPerDepth(diGraph), ab = new int[2];
-		int depth = 0, sum = 0;
+		int depth = 0;
 		
-		while (sum + numNodesPerDepth[depth] <= a) {
-			sum += numNodesPerDepth[depth];
-			depth++;
+		while (ab[0] + numNodesPerDepth[depth] <= a) {
+			ab[0] += numNodesPerDepth[depth++];
 		}
 		
-		ab[0] = ab[1] = sum;
+		ab[1] = ab[0];
 		
-		while (sum + numNodesPerDepth[depth] <= b) {
-			sum += numNodesPerDepth[depth];
-			depth++;
+		while (ab[1] + numNodesPerDepth[depth] <= b) {
+			ab[1] += numNodesPerDepth[depth++];
 		}
-		
-		ab[1] = sum;
 		
 		return ab;
 	}
