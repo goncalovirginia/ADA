@@ -45,23 +45,23 @@ public class Promotions {
 	
 	private static int[] numNodesPerDepth(DiGraph diGraph) {
 		int[] numNodesPerDepth = new int[diGraph.numNodes()], inDegree = new int[diGraph.numNodes()];
-		LinkedList<Integer> bag = new LinkedList<>();
+		LinkedList<Integer> queue = new LinkedList<>();
 		int currDepth = 0;
 		
 		for (int node = 0; node < diGraph.numNodes(); node++) {
 			if ((inDegree[node] = diGraph.inDegree(node)) == 0) {
-				bag.add(node);
+				queue.add(node);
 				numNodesPerDepth[currDepth]++;
 			}
 		}
 		
 		currDepth++;
 		
-		while (!bag.isEmpty()) {
-			for (int i = 0, j = bag.size(); i < j; i++) {
-				for (int successor : diGraph.outAdjacentNodes(bag.remove())) {
+		while (!queue.isEmpty()) {
+			for (int i = 0, j = queue.size(); i < j; i++) {
+				for (int successor : diGraph.outAdjacentNodes(queue.remove())) {
 					if (--inDegree[successor] == 0) {
-						bag.add(successor);
+						queue.add(successor);
 						numNodesPerDepth[currDepth]++;
 					}
 				}
