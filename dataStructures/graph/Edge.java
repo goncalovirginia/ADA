@@ -1,4 +1,4 @@
-package dataStructures;
+package graph;
 
 public interface Edge {
 	

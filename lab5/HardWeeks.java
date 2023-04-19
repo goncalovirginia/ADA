@@ -1,5 +1,5 @@
-import dataStructures.DiGraph;
-import dataStructures.LinkedDiGraph;
+import graph.DiGraph;
+import graph.LinkedDiGraph;
 
 import java.io.BufferedReader;
 import java.io.IOException;

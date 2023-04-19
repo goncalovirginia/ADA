@@ -44,7 +44,7 @@ public class BridgesOfKolsberg {
 			}
 		}
 		
-		return new long[] {maxTradeValue[citiesNorth.length - 1][citiesSouth.length - 1],
+		return new long[]{maxTradeValue[citiesNorth.length - 1][citiesSouth.length - 1],
 				minBridges[citiesNorth.length - 1][citiesSouth.length - 1]};
 	}
 	

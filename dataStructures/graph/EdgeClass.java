@@ -1,4 +1,4 @@
-package dataStructures;
+package graph;
 
 public class EdgeClass implements Edge {
 	
