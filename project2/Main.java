@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		int[] rowsColsTests = Arrays.stream(in.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-		char[][] map = new char[rowsColsTests[0]][rowsColsTests[1]];
+		char[][] map = new char[rowsColsTests[0]][];
 		
 		for (int i = 0; i < rowsColsTests[0]; i++) {
 			map[i] = in.readLine().toCharArray();
@@ -19,13 +19,7 @@ public class Main {
 		for (int i = 0; i < rowsColsTests[2]; i++) {
 			int[] coords = Arrays.stream(in.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 			int solution = mapSolver.solveBfs(coords);
-			
-			if (solution == -1) {
-				System.out.println("Stuck");
-				continue;
-			}
-			
-			System.out.println(solution);
+			System.out.println(solution == -1 ? "Stuck" : solution);
 		}
 	}
 	

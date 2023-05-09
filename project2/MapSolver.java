@@ -1,4 +1,3 @@
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,7 +15,7 @@ public class MapSolver {
 	}
 	
 	public int solveBfs(int[] coords) {
-		int[][] numMoves = new int[map.length][map[0].length];
+		int[][] numMoves = new int[dimensions[0]][dimensions[1]];
 		numMoves[--coords[0]][--coords[1]] = 1;
 		Queue<int[]> queue = new LinkedList<>();
 		queue.add(coords);
