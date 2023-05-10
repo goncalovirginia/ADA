@@ -1,17 +1,22 @@
+import unionFind.UnionFind;
+import unionFind.UnionFindInArray;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class MapSolver {
 	
 	private static final char OBJECT = 'O', HOLE = 'H';
-	private static final int[] directions = {-1, 1};
+	private static final int[] DIRECTIONS = {-1, 1};
 	
 	private final char[][] map;
 	private final int[] dimensions;
+	private final UnionFind unionFind;
 	
 	public MapSolver(char[][] map) {
 		this.map = map;
 		this.dimensions = new int[]{map.length, map[0].length};
+		this.unionFind = new UnionFindInArray(dimensions[0] * dimensions[1]);
 	}
 	
 	public int solveBfs(int[] coords) {
@@ -25,7 +30,7 @@ public class MapSolver {
 			int[] currCoords = queue.poll();
 			int axis = numMoves[currCoords[0]][currCoords[1]] > 0 ? 0 : 1;
 			
-			for (int direction : directions) {
+			for (int direction : DIRECTIONS) {
 				int[] nextCoords = {currCoords[0], currCoords[1]};
 				
 				while (nextCoords[axis] >= 0 && nextCoords[axis] < dimensions[axis]) {
