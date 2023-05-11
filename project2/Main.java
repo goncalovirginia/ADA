@@ -18,8 +18,8 @@ public class Main {
 		
 		for (int i = 0; i < rowsColsTests[2]; i++) {
 			int[] coords = Arrays.stream(in.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-			int solution = mapSolver.solveBfs(coords);
-			System.out.println(solution == -1 ? "Stuck" : solution);
+			int solution = mapSolver.solve(coords);
+			System.out.println(solution == Integer.MAX_VALUE ? "Stuck" : solution);
 		}
 	}
 	

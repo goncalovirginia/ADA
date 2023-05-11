@@ -1,6 +1,4 @@
-import unionFind.UnionFind;
-import unionFind.UnionFindInArray;
-
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -10,53 +8,72 @@ public class MapSolver {
 	private static final int[] DIRECTIONS = {-1, 1};
 	
 	private final char[][] map;
-	private final int[] dimensions;
-	private final UnionFind unionFind;
+	private final int[] dimensions, parent, movesToHole;
 	
 	public MapSolver(char[][] map) {
 		this.map = map;
 		this.dimensions = new int[]{map.length, map[0].length};
-		this.unionFind = new UnionFindInArray(dimensions[0] * dimensions[1]);
+		this.parent = new int[dimensions[0] * dimensions[1]];
+		Arrays.fill(this.parent, -1);
+		this.movesToHole = new int[dimensions[0] * dimensions[1]];
 	}
 	
-	public int solveBfs(int[] coords) {
-		int[][] numMoves = new int[dimensions[0]][dimensions[1]];
-		numMoves[--coords[0]][--coords[1]] = 1;
+	public int solve(int[] coords) {
 		Queue<int[]> queue = new LinkedList<>();
-		queue.add(coords);
-		queue.add(coords);
+		queue.add(new int[]{--coords[0], --coords[1], 0});
+		queue.add(new int[]{coords[0], coords[1], 1});
+		boolean[][] explored = new boolean[dimensions[0]][dimensions[1]];
+		explored[coords[0]][coords[1]] = true;
+		movesToHole[coords[0] * dimensions[1] + coords[1]] = -1;
+		int minMoves = Integer.MAX_VALUE;
 		
 		while (!queue.isEmpty()) {
 			int[] currCoords = queue.poll();
-			int axis = numMoves[currCoords[0]][currCoords[1]] > 0 ? 0 : 1;
+			int currCoordsIndex = currCoords[0] * dimensions[1] + currCoords[1];
 			
 			for (int direction : DIRECTIONS) {
-				int[] nextCoords = {currCoords[0], currCoords[1]};
+				int[] nextCoords = {currCoords[0], currCoords[1], currCoords[2] == 0 ? 1 : 0};
+				int axis = nextCoords[2];
 				
 				while (nextCoords[axis] >= 0 && nextCoords[axis] < dimensions[axis]) {
-					if (map[nextCoords[0]][nextCoords[1]] == OBJECT) {
+					char character = map[nextCoords[0]][nextCoords[1]];
+					
+					if (character == OBJECT) {
 						nextCoords[axis] -= direction;
 						
-						if (numMoves[nextCoords[0]][nextCoords[1]] == 0) {
-							queue.add(nextCoords);
-							numMoves[nextCoords[0]][nextCoords[1]] = -numMoves[currCoords[0]][currCoords[1]] + (axis == 0 ? -1 : 1);
+						if (!explored[nextCoords[0]][nextCoords[1]]) {
+							int nextCoordsIndex = nextCoords[0] * dimensions[1] + nextCoords[1];
+							
+							if (movesToHole[nextCoordsIndex] > 0) {
+								minMoves = Math.min(minMoves, -movesToHole[currCoordsIndex] + movesToHole[nextCoordsIndex]);
+							}
+							else if (-movesToHole[currCoordsIndex] < minMoves) {
+								queue.add(nextCoords);
+								explored[nextCoords[0]][nextCoords[1]] = true;
+								parent[nextCoordsIndex] = currCoordsIndex;
+								movesToHole[nextCoordsIndex] = movesToHole[currCoordsIndex] - 1;
+							}
 						}
 						
 						break;
 					}
-					
-					if (map[nextCoords[0]][nextCoords[1]] == HOLE) {
-						return Math.abs(numMoves[currCoords[0]][currCoords[1]]);
+					if (character == HOLE) {
+						int moves = 0, start = coords[0] * dimensions[1] + coords[1], curr = nextCoords[0] * dimensions[1] + nextCoords[1];
+						parent[curr] = currCoordsIndex;
+						
+						do {
+							movesToHole[curr = parent[curr]] = ++moves;
+						} while (curr != start);
+						
+						return movesToHole[curr];
 					}
 					
 					nextCoords[axis] += direction;
 				}
 			}
-			
-			numMoves[currCoords[0]][currCoords[1]] = -numMoves[currCoords[0]][currCoords[1]];
 		}
 		
-		return -1;
+		return minMoves;
 	}
 	
 }
