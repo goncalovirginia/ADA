@@ -16,11 +16,15 @@ public class Main {
 		
 		MapSolver mapSolver = new MapSolver(map);
 		
+		double start = System.nanoTime();
+		
 		for (int i = 0; i < rowsColsTests[2]; i++) {
 			int[] coords = Arrays.stream(in.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 			int solution = mapSolver.solve(coords);
 			System.out.println(solution == Integer.MAX_VALUE ? "Stuck" : solution);
 		}
+		
+		System.out.println(System.nanoTime() - start);
 	}
 	
 }
