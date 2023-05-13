@@ -19,16 +19,21 @@ public class MapSolver {
 	}
 	
 	public int solve(int[] coords) {
+		int startCoordsIndex = --coords[0] * dimensions[1] + --coords[1];
+		
+		if (movesToHole[startCoordsIndex] > 0) {
+			return movesToHole[startCoordsIndex];
+		}
+		
+		movesToHole[startCoordsIndex] = -1;
+		int minMoves = Integer.MAX_VALUE, minCoordsIndex = -1;
+		
 		Queue<int[]> queue = new LinkedList<>();
-		queue.add(new int[]{--coords[0], --coords[1], 0});
+		queue.add(new int[]{coords[0], coords[1], 0});
 		queue.add(new int[]{coords[0], coords[1], 1});
 		
 		boolean[] explored = new boolean[dimensions[0] * dimensions[1]];
-		int startCoordsIndex = coords[0] * dimensions[1] + coords[1];
 		explored[startCoordsIndex] = true;
-		
-		movesToHole[startCoordsIndex] = -1;
-		int minMoves = Integer.MAX_VALUE;
 		
 		while (!queue.isEmpty()) {
 			int[] currCoords = queue.poll();
@@ -49,7 +54,12 @@ public class MapSolver {
 							explored[nextCoordsIndex] = true;
 							
 							if (movesToHole[nextCoordsIndex] > 0) {
-								minMoves = Math.min(minMoves, -movesToHole[currCoordsIndex] + movesToHole[nextCoordsIndex]);
+								int currMoves = -movesToHole[currCoordsIndex] + movesToHole[nextCoordsIndex];
+								if (currMoves < minMoves) {
+									minMoves = currMoves;
+									minCoordsIndex = nextCoordsIndex;
+									parent[nextCoordsIndex] = currCoordsIndex;
+								}
 							}
 							else if (-movesToHole[currCoordsIndex] < minMoves) {
 								queue.add(nextCoords);
@@ -61,14 +71,10 @@ public class MapSolver {
 						break;
 					}
 					if (character == HOLE) {
-						int moves = 1, curr = nextCoords[0] * dimensions[1] + nextCoords[1];
-						parent[curr] = currCoordsIndex;
-						
-						while (curr != startCoordsIndex) {
-							movesToHole[curr = parent[curr]] = moves++;
-						}
-						
-						return movesToHole[curr];
+						int nextCoordsIndex = nextCoords[0] * dimensions[1] + nextCoords[1];
+						parent[nextCoordsIndex] = currCoordsIndex;
+						backtrack(startCoordsIndex, nextCoordsIndex, 0);
+						return movesToHole[startCoordsIndex];
 					}
 					
 					nextCoords[axis] += direction;
@@ -76,7 +82,17 @@ public class MapSolver {
 			}
 		}
 		
+		if (minCoordsIndex != -1) {
+			backtrack(startCoordsIndex, minCoordsIndex, movesToHole[minCoordsIndex]);
+		}
+		
 		return minMoves;
+	}
+	
+	private void backtrack(int startIndex, int currIndex, int moves) {
+		while (currIndex != startIndex) {
+			movesToHole[currIndex = parent[currIndex]] = ++moves;
+		}
 	}
 	
 }
