@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -15,7 +14,6 @@ public class MapSolver {
 		this.dimensions = new int[]{map.length, map[0].length};
 		this.movesToHole = new int[dimensions[0] * dimensions[1]];
 		this.parent = new int[dimensions[0] * dimensions[1]];
-		Arrays.fill(this.parent, -1);
 	}
 	
 	public int solve(int[] coords) {
