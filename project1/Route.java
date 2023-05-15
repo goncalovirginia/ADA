@@ -3,10 +3,10 @@ public class Route {
 	private static final int BIG_VALUE = 1000000, NUM_ITEMS = 4, NO_ITEM = 3, NO_MONSTER = 3;
 	
 	private static final int[][] COST = {
-			{4, 5, 6, BIG_VALUE},
-			{BIG_VALUE, 5, 6, BIG_VALUE},
-			{BIG_VALUE, BIG_VALUE, 6, BIG_VALUE},
-			{2, 2, 2, 1}
+		{4, 5, 6, BIG_VALUE},
+		{BIG_VALUE, 5, 6, BIG_VALUE},
+		{BIG_VALUE, BIG_VALUE, 6, BIG_VALUE},
+		{2, 2, 2, 1}
 	};
 	
 	private final String route;
@@ -28,7 +28,7 @@ public class Route {
 			
 			for (int itemInt = 0; itemInt < NUM_ITEMS; itemInt++) {
 				curr[itemInt] = plotHasMonster ? Math.min(COST[plotInt][itemInt] + prev[itemInt], BIG_VALUE) :
-						COST[NO_MONSTER][itemInt] + Math.min(prev[NO_ITEM], 1 + Math.min(prev[itemInt], prev[plotInt]));
+					COST[NO_MONSTER][itemInt] + Math.min(prev[NO_ITEM], 1 + Math.min(prev[itemInt], prev[plotInt]));
 			}
 		}
 		
