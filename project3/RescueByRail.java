@@ -1,11 +1,11 @@
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
+@SuppressWarnings("unchecked")
 public class RescueByRail {
-	
+
 	LinkedList<int[]>[] nodeOutEdges;
-	
+
 	public RescueByRail(int[][] regions, int[][] links) {
 		nodeOutEdges = new LinkedList[regions.length * 2 + 1];
 		nodeOutEdges[0] = new LinkedList<>();
@@ -23,13 +23,13 @@ public class RescueByRail {
 
 			currNode += 2;
 		}
-		
+
 		for (int[] link : links) {
 			nodeOutEdges[link[0] * 2].add(new int[]{link[1] * 2 - 1, Integer.MAX_VALUE});
 			nodeOutEdges[link[1] * 2].add(new int[]{link[0] * 2 - 1, Integer.MAX_VALUE});
 		}
 	}
-	
+
 	public int solve(int sink) {
 		sink = sink * 2 - 1;
 		int[][] flow = new int[nodeOutEdges.length][nodeOutEdges.length];

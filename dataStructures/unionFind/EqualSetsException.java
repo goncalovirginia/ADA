@@ -2,16 +2,16 @@ package unionFind;
 
 public class EqualSetsException extends RuntimeException {
 
-    static final long serialVersionUID = 0L;
+	static final long serialVersionUID = 0L;
 
 
-    public EqualSetsException( ) {
-        super();
-    }
+	public EqualSetsException() {
+		super();
+	}
 
-    public EqualSetsException( String message ) {
-        super(message);
-    }
+	public EqualSetsException(String message) {
+		super(message);
+	}
 
 }
 

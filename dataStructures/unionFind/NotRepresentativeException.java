@@ -2,16 +2,16 @@ package unionFind;
 
 public class NotRepresentativeException extends RuntimeException {
 
-    static final long serialVersionUID = 0L;
+	static final long serialVersionUID = 0L;
 
 
-    public NotRepresentativeException( ) {
-        super();
-    }
+	public NotRepresentativeException() {
+		super();
+	}
 
-    public NotRepresentativeException( String message ) {
-        super(message);
-    }
+	public NotRepresentativeException(String message) {
+		super(message);
+	}
 
 }
 
