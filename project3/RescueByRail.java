@@ -26,7 +26,9 @@ public class RescueByRail {
 
 		for (int[] link : links) {
 			nodeOutEdges[link[0] * 2].add(new int[]{link[1] * 2 - 1, Integer.MAX_VALUE});
+			nodeOutEdges[link[1] * 2 - 1].add(new int[]{link[0] * 2, 0});
 			nodeOutEdges[link[1] * 2].add(new int[]{link[0] * 2 - 1, Integer.MAX_VALUE});
+			nodeOutEdges[link[0] * 2 - 1].add(new int[]{link[1] * 2, 0});
 		}
 	}
 
